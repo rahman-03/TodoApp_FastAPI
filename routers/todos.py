@@ -39,7 +39,7 @@ def redirect_to_login():
     redirect_response.delete_cookie(key="access_token")
     return redirect_response
 
-templates = Jinja2Templates(directory='todoapp_full_stack/templates')
+templates = Jinja2Templates(directory='templates')
 
 @router.get('/todo-page')
 async def render_todo_page(request: Request, db : db_dependancy):

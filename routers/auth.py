@@ -47,7 +47,7 @@ def get_db():
 
 db_dependancy = Annotated[Session,Depends(get_db)]
 
-templates = Jinja2Templates(directory='todoapp_full_stack/templates')
+templates = Jinja2Templates(directory='templates')
 
 # Pages
 @router.get('/login-page')
