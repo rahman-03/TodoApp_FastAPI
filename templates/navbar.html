@@ -1,25 +1,12 @@
-<div>
-    <nav class="navbar navbar-expand-md navbar-dark main-color fixed-top">
-        <a href="#" class="navbar-brand">Focus Sprint</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="#navbarNav" aria-expanded=false aria-label="Toggle Navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                {% if user %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="/todos/todo-page">Home</a>
-                </li>
-                {% endif %}
-            </ul>
-
-            <ul class="navbar-nav ml-auto">
-                {% if user %}
-                <li class="nav-item m-1">
-                    <a type="button" class="btn btn-outline-light text-white" onclick="logout()">Logout</a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
-</div>
+<nav class="navbar fixed-top main-color">
+    <div class="container">
+      <a class="navbar-brand" href="/todos/home-page">Focus Sprint</a>
+      <div class="d-flex align-items-center gap-3">
+        {% if user %}
+          <a class="nav-link text-white" href="/todos/home-page">Home</a>
+          <a class="nav-link text-white" href="/todos/todo-page">Todo</a>
+          <a class="btn btn-outline-light text-white btn-sm" onclick="logout()">Logout</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>

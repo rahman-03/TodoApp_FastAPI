@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm , OAuth2PasswordBearer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr
 from passlib.hash import pbkdf2_sha256 # type: ignore
 from sqlalchemy.orm import Session
 from jose import jwt , JWTError # type: ignore
@@ -26,13 +26,13 @@ router = APIRouter(
 )
 
 class UserRequest(BaseModel):
-    email : str
-    username : str
-    firstname : str
-    lastname : str
-    password : str
-    role : str
-    phone_no : str
+    email: str
+    username: str
+    firstname: str
+    lastname: str
+    password: str
+    phone_no: str
+
 
 class Token(BaseModel):
     access_token : str
@@ -70,7 +70,7 @@ async def create_user(db:db_dependancy , new_user : UserRequest):
         lastname = new_user.lastname,
         hashed_pass = pbkdf2_sha256.hash(new_user.password),
         is_active = True,
-        role = new_user.role,
+        role = "user",
         phone_no = new_user.phone_no
     )
 

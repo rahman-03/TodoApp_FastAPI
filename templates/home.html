@@ -1,0 +1,56 @@
+{% include 'layout.html' %}
+
+<main class="hero">
+    <div class="container">
+      <div class="row gy-4 align-items-center">
+        <div class="col-lg-7">
+          <div class="pe-lg-5">
+            <div class="mb-3 eyebrow">Focus • Sprint • Ship</div>
+            <h1 class="display-4 fw-bold">Welcome to Focus Sprint</h1>
+            <p class="lead text-muted mb-4">
+              Plan your day, prioritize what matters, and turn small steps into big wins. Focus Sprint helps you create tasks,
+              track progress, and stay in the flow — all in a clean, distraction-free workspace.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+              <a class="btn btn-primary cta-btn" href="/todos/todo-page">Go to Todo</a>
+            </div>
+
+            <p class="mt-3 text-muted">Signed in as <strong>{{ user.username}}</strong></p>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="hero-card p-4">
+            <h5 class="mb-1">Quick highlights</h5>
+            <p class="text-muted small mb-3">Everything you need to stay productive</p>
+
+            <ul class="list-unstyled mb-3">
+              <li class="d-flex mb-2">
+                <div class="me-3 align-self-start" style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#e6f5ff,#d7efff);display:flex;align-items:center;justify-content:center;color:#0e76a8;font-weight:700">✓</div>
+                <div>
+                  <div class="fw-semibold">Clear task management</div>
+                  <div class="text-muted small">Add, edit, and prioritize tasks quickly.</div>
+                </div>
+              </li>
+
+              <li class="d-flex mb-2">
+                <div class="me-3 align-self-start" style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#f0f8ff,#eaf6ff);display:flex;align-items:center;justify-content:center;color:#0e76a8;font-weight:700">🔒</div>
+                <div>
+                  <div class="fw-semibold">Secure by design</div>
+                  <div class="text-muted small">Credentials stored as environment variables — production ready.</div>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12 text-center text-muted small">
+          Made with ❤️ for focus and momentum — <strong>Focus Sprint</strong>
+        </div>
+      </div>
+    </div>
+  </main>

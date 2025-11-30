@@ -1,8 +1,10 @@
-
 body {
   background: #fafafa;
   color: #33333a;
   padding-top: 70px;
+  min-height: 100vh;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -14,17 +16,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .strike-through-td {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
-/* .completed-background{
-    background-color: rgb(51, 51, 155);
-} */
-
-/* h1 {
-  color: red;
-} */
-
-
-
-
+/* Small additions to blend with Bootstrap */
+.navbar-brand { font-weight: 700; color: #fff !important; }
+.hero {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+}
+.hero-card {
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(16,24,40,0.06);
+  background: #fff;
+}
+.eyebrow {
+  display:inline-block;
+  background:#e9f6ff;
+  color:#0e76a8;
+  padding:5px 10px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:0.85rem;
+}
+.cta-btn {
+  border-radius:10px;
+  padding: 10px 18px;
+  font-weight:700;
+}
+@media (max-width: 767px) {
+  .hero { padding: 2rem 1rem; text-align:center; }
+}

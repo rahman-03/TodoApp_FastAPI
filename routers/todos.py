@@ -41,6 +41,17 @@ def redirect_to_login():
 
 templates = Jinja2Templates(directory='templates')
 
+@router.get('/home-page')
+async def render_home_page(request: Request, db : db_dependancy):
+    try:
+        user = await get_current_user(request.cookies.get('access_token'))
+        if not user:
+            return redirect_to_login()
+
+        return templates.TemplateResponse('home.html', {"request" : request, "user" : user}) 
+    except:
+        return redirect_to_login()
+
 @router.get('/todo-page')
 async def render_todo_page(request: Request, db : db_dependancy):
     try:
