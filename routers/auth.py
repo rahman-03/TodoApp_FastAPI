@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field, EmailStr
 from passlib.hash import pbkdf2_sha256 # type: ignore
 from sqlalchemy.orm import Session
 from jose import jwt , JWTError # type: ignore
-from fastapi.templating import Jinja2Templates
 
 
 
@@ -46,17 +45,6 @@ def get_db():
         db.close()
 
 db_dependancy = Annotated[Session,Depends(get_db)]
-
-templates = Jinja2Templates(directory='templates')
-
-# Pages
-@router.get('/login-page')
-def render_login_page(request: Request):
-    return templates.TemplateResponse("login.html", {'request' : request})
-
-@router.get('/register-page')
-def render_register_page(request: Request):
-    return templates.TemplateResponse("register.html", {'request' : request})
 
 
 # Endpoints

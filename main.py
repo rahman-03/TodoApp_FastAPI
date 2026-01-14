@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request, status
 import uvicorn
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 # local
 from database import Base, engine
@@ -12,15 +11,13 @@ app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
-app.mount("/static", StaticFiles(directory='static'), name='static')
-
-@app.get('/favicon.ico')
-async def favicon():
-    return FileResponse('static/images/favicon.ico')
-
-@app.get('/')
-def test(request : Request):
-   return RedirectResponse(url="/todos/home-page", status_code=status.HTTP_302_FOUND)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/healthy')
 async def health_check():
