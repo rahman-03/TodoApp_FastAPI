@@ -4,12 +4,9 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from passlib.hash import pbkdf2_sha256 # type: ignore
 
-
-
-
 from database import SessionLocal # type: ignore
 from models import Todos, Users # type: ignore
-from .auth import get_current_user # type: ignore
+from .auth import authenticate, get_current_user # type: ignore
 
 
 
@@ -65,7 +62,7 @@ async def change_password(user : user_dependancy, db: db_dependancy, newpass : P
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     detail = db.query(Users).filter(Users.id == user.get('id')).first()
-    if not pbkdf2_sha256.verify(newpass.old_pass, detail.hashed_pass):
+    if not authenticate(user.get('username'),detail.password,db):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     if newpass.new_pass == newpass.conf_pass:
         detail.hashed_pass = pbkdf2_sha256.hash(newpass.new_pass)
@@ -79,7 +76,7 @@ async def details_change(user : user_dependancy, db: db_dependancy, newdetails :
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     detail = db.query(Users).filter(Users.id == user.get('id')).first()
-    if not pbkdf2_sha256.verify(newdetails.password, detail.hashed_pass):
+    if not authenticate(user.get('username'),detail.password,db):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     if newdetails.email:
         detail.email = newdetails.email

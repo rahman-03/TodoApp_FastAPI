@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from database import SessionLocal # type: ignore
 from models import Todos # type: ignore
-from .auth import get_current_user # type: ignore
+from .auth import authenticate, get_current_user # type: ignore
 
 
 class TodoRequest(BaseModel):
@@ -38,6 +38,7 @@ user_dependancy = Annotated[dict , Depends(get_current_user)]
 async def root(user : user_dependancy, db: db_dependancy):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+
     return db.query(Todos).filter(Todos.owner_id == user.get('id')).all()
 
 # get todo by id
@@ -58,6 +59,9 @@ async def todo_create(user : user_dependancy, db: db_dependancy, todo_req : Todo
     todo_req = Todos(**todo_req.model_dump(), owner_id = user.get('id'))
     db.add(todo_req)
     db.commit()
+    return {
+        "message": "todo created successfully"
+    }
 
 # update a todo
 @router.put('/todo/{todo_id}',status_code=status.HTTP_204_NO_CONTENT)
@@ -65,6 +69,7 @@ async def todo_update(user : user_dependancy, db: db_dependancy,todo_req : TodoR
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     todo_model = db.query(Todos).filter(Todos.id ==todo_id).filter(Todos.owner_id ==user.get('id')).first()
+
     if not todo_model:
         raise HTTPException(status_code=404,detail="Item not found")
     todo_model.title = todo_req.title
@@ -73,6 +78,9 @@ async def todo_update(user : user_dependancy, db: db_dependancy,todo_req : TodoR
     todo_model.complete = todo_req.complete
 
     db.commit()
+    return {
+        "message": "todo {todo_id} updated successfully"
+    }
 
 # delete todo
 @router.delete('/todo/{todo_id}',status_code=status.HTTP_204_NO_CONTENT)
@@ -84,3 +92,44 @@ async def todo_delete(user : user_dependancy, db: db_dependancy, todo_id:int = P
         raise HTTPException(status_code=404,detail="Item not found")
     db.query(Todos).filter(Todos.id ==todo_id).filter(Todos.owner_id ==user.get('id')).delete()
     db.commit()
+    return {
+        "message": "todo {todo_id} deleted successfully"
+    }
+
+
+class DeleteAllTodosRequest(BaseModel):
+    password: str
+
+# delete all todo
+@router.delete("/deleteall", status_code=status.HTTP_200_OK)
+async def delete_all_todos(user : user_dependancy, db: db_dependancy,request: DeleteAllTodosRequest):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication failed"
+        )
+    if not authenticate(user.get('username'),request.password,db):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid password"
+        )
+
+    todos_query = db.query(Todos).filter(
+        Todos.owner_id == user.get("id")
+    )
+
+    count = todos_query.count()
+
+    if count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No todos found"
+        )
+
+    todos_query.delete(synchronize_session=False)
+    db.commit()
+
+    return {
+        "message": "All todos deleted successfully",
+        "deleted_count": count
+    }
