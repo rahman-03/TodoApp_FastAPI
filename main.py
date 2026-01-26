@@ -1,14 +1,11 @@
-import os
 from fastapi import FastAPI, Request, status
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-from dotenv import load_dotenv    # For local env
-load_dotenv()
-
 # local
 from database import Base, engine
 from routers import auth, todos, admin, users
+from config import FRONTEND_URL
 
 
 app = FastAPI()
@@ -17,7 +14,7 @@ Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL")],
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

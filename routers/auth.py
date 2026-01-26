@@ -1,4 +1,3 @@
-import os
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -8,13 +7,9 @@ from passlib.hash import pbkdf2_sha256 # type: ignore
 from sqlalchemy.orm import Session
 from jose import jwt , JWTError # type: ignore
 
-
-
 from models import Users # type: ignore
 from database import SessionLocal # type: ignore
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGO = os.getenv("ALGO")
+from config import SECRET_KEY, ALGO
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
