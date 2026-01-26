@@ -1,6 +1,10 @@
+import os
 from fastapi import FastAPI, Request, status
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
+
+from dotenv import load_dotenv    # For local env
+load_dotenv()
 
 # local
 from database import Base, engine
@@ -13,7 +17,7 @@ Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://focussprint.netlify.app"],
+    allow_origins=[os.getenv("FRONTEND_URL")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
