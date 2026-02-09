@@ -30,8 +30,8 @@ target_metadata = Base.metadata
 #  Setting database url
 import os
 
-# from dotenv import load_dotenv    # For local env
-# load_dotenv()
+from dotenv import load_dotenv    # For local env
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

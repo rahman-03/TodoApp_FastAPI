@@ -1,18 +1,31 @@
 from fastapi import APIRouter, Depends, HTTPException, Path, status
-from typing import Annotated
+from typing import Annotated, List, Optional
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from database import SessionLocal # type: ignore
-from models import Todos # type: ignore
+from models import Todos, Users # type: ignore
 from .auth import get_current_user # type: ignore
 
 
-class TodoRequest(BaseModel):
-    title : str = Field(min_length=3)
-    description : str = Field(min_length=3,max_length=100)
-    priority : int  = Field(ge=1,le=5)
-    complete : bool
+class UserResponse(BaseModel):
+    id : int
+    email : str
+    username : str
+    firstname : str
+    lastname : str
+    is_active : bool
+    role : str
+    phone_no : str | None
+
+class AdminUserProfileUpdate(BaseModel):
+    email : Optional[str] = None
+    username : Optional[str] = None
+    firstname : Optional[str] = None
+    lastname : Optional[str] = None
+    is_active : Optional[bool] = None
+    role : Optional[str] = None
+    phone_no : Optional[str] = None
 
 
 router = APIRouter(
@@ -30,54 +43,39 @@ def get_db():
 db_dependancy = Annotated[Session , Depends(get_db)]
 user_dependancy = Annotated[dict , Depends(get_current_user)]
 
-# get all todos
-@router.get('/')
-async def root(user : user_dependancy, db: db_dependancy):
+# get all users
+@router.get('/users', response_model=List[UserResponse], status_code=status.HTTP_200_OK)
+async def users_list(user : user_dependancy, db: db_dependancy):
     if not user or user.get('role') != 'admin':
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
-    return db.query(Todos).all()
+    return db.query(Users).all()
 
-# get todo by id
-@router.get('/todo/{todo_id}',status_code=status.HTTP_200_OK)
-async def todo_by_id(user : user_dependancy, db: db_dependancy, todo_id:int = Path(ge=1)):
+# get user by id
+@router.get('/users/{user_id}', response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def user_detail(user : user_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
     if not user or user.get('role') != 'admin':
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
-    todo_res = db.query(Todos).filter(Todos.id ==todo_id).first()
-    if todo_res:
-        return todo_res
-    raise HTTPException(status_code=404,detail="Item not found")
+    return db.query(Users).filter(Users.id ==user_id).first()
 
-# Create a todo
-@router.post('/todo',status_code=status.HTTP_201_CREATED)
-async def todo_create(user : user_dependancy, db: db_dependancy, todo_req : TodoRequest):
+# delete user
+@router.delete('/user/{user_id}',status_code=status.HTTP_204_NO_CONTENT)
+async def user_delete(user : user_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
     if not user or user.get('role') != 'admin':
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
-    todo_req = Todos(**todo_req.model_dump(), owner_id = user.get('id'))
-    db.add(todo_req)
+    user_res = db.query(Users).filter(Users.id ==user_id).first()
+    if not user_id:
+        raise HTTPException(status_code=404,detail="Item not found")
+    db.delete(user_res)
     db.commit()
 
-# update a todo
-@router.put('/todo/{todo_id}',status_code=status.HTTP_204_NO_CONTENT)
-async def todo_update(user : user_dependancy, db: db_dependancy,todo_req : TodoRequest, todo_id:int = Path(ge=1)):
+# update user
+@router.put('/user_update/{user_id}',status_code=status.HTTP_204_NO_CONTENT)
+async def user_update(user : user_dependancy, db: db_dependancy, newdetails : AdminUserProfileUpdate, user_id:int = Path(ge=1)):
     if not user or user.get('role') != 'admin':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
-    todo_model = db.query(Todos).filter(Todos.id ==todo_id).first()
-    if not todo_model:
-        raise HTTPException(status_code=404,detail="Item not found")
-    todo_model.title = todo_req.title
-    todo_model.description = todo_req.description
-    todo_model.priority = todo_req.priority
-    todo_model.complete = todo_req.complete
-
-    db.commit()
-
-# delete todo
-@router.delete('/todo/{todo_id}',status_code=status.HTTP_204_NO_CONTENT)
-async def todo_delete(user : user_dependancy, db: db_dependancy, todo_id:int = Path(ge=1)):
-    if not user or user.get('role') != 'admin':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
-    todo_res = db.query(Todos).filter(Todos.id ==todo_id).first()
-    if not todo_res:
-        raise HTTPException(status_code=404,detail="Item not found")
-    db.query(Todos).filter(Todos.id ==todo_id).delete()
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin access required')
+    detail = db.query(Users).filter(Users.id == user_id).first()
+    if not detail:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    for field, value in newdetails.model_dump(exclude_unset=True).items():
+        setattr(detail, field, value)
     db.commit()

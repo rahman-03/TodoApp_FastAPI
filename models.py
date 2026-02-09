@@ -1,5 +1,6 @@
 from database import Base
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 class Users(Base):
     __tablename__ = 'user'
@@ -14,6 +15,13 @@ class Users(Base):
     role = Column(String(255))
     phone_no = Column(String(255))
 
+    todos = relationship(
+        "Todos",
+        back_populates="owner",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+
 
 
 class Todos(Base):
@@ -24,4 +32,10 @@ class Todos(Base):
     description = Column(String(500))
     priority = Column(Integer)
     complete = Column(Boolean, default=False)
-    owner_id = Column(Integer,ForeignKey("user.id"))
+    owner_id = Column(
+        Integer,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    owner = relationship("Users", back_populates="todos")
