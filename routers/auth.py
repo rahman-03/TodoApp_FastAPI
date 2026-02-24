@@ -75,17 +75,20 @@ def create_access_token(username : str, userid : int,role : str, expiry_delta : 
     encode.update({ 'exp' : expires })
     return jwt.encode(encode , SECRET_KEY , algorithm=ALGO)
 
-async def get_current_user(token : Annotated[str , Depends(oauth2_bearer)]):
-    try:
-        payload = jwt.decode(token , SECRET_KEY , algorithms=ALGO)
-        username = payload.get('sub')
-        userid = payload.get('id')
-        userrole = payload.get('role')
-        if not username or not userid:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED , detail = "Couldn\'t validate the user")
-        return { 'username' : username, 'id' : userid, 'role' : userrole }
-    except JWTError:
+async def get_current_user(token : Annotated[str , Depends(oauth2_bearer)], db: db_dependancy):
+    payload = jwt.decode(token , SECRET_KEY , algorithms=ALGO)
+    user = db.query(Users).filter(Users.id == payload.get('id')).first()
+    if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED , detail = "Couldn\'t validate the user")
+    if not user.is_active:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User account is inactive")
+    return { 'username' : payload.get('sub'), 'id' : payload.get('id'), 'role' : payload.get('role') }
+
+    
+def admin_required(current_user: Users = Depends(get_current_user)):
+    if current_user.get('role') != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Admin access required")
+    return current_user
     
 
 @router.post('/token', response_model= Token)
@@ -93,5 +96,7 @@ async def auth_user(auth_form : Annotated[OAuth2PasswordRequestForm, Depends()],
     user = authenticate(auth_form.username,auth_form.password,db)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED , detail = "Couldn\'t validate the user")
+    if not user.is_active:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User account is inactive")
     token = create_access_token(user.username, user.id, user.role, timedelta(minutes=20))
     return {'access_token' : token , 'token_type' : 'bearer'}

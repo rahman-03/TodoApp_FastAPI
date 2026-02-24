@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from database import SessionLocal # type: ignore
 from models import Todos, Users # type: ignore
-from .auth import get_current_user # type: ignore
+from .auth import admin_required # type: ignore
 
 
 class UserResponse(BaseModel):
@@ -41,41 +41,37 @@ def get_db():
         db.close()
 
 db_dependancy = Annotated[Session , Depends(get_db)]
-user_dependancy = Annotated[dict , Depends(get_current_user)]
+admin_dependancy = Annotated[dict , Depends(admin_required)]
 
 # get all users
 @router.get('/users', response_model=List[UserResponse], status_code=status.HTTP_200_OK)
-async def users_list(user : user_dependancy, db: db_dependancy):
-    if not user or user.get('role') != 'admin':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+async def users_list(user : admin_dependancy, db: db_dependancy):
     return db.query(Users).all()
 
 # get user by id
 @router.get('/users/{user_id}', response_model=UserResponse, status_code=status.HTTP_200_OK)
-async def user_detail(user : user_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
-    if not user or user.get('role') != 'admin':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+async def user_detail(user : admin_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
     return db.query(Users).filter(Users.id ==user_id).first()
 
 # delete user
 @router.delete('/user/{user_id}',status_code=status.HTTP_204_NO_CONTENT)
-async def user_delete(user : user_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
-    if not user or user.get('role') != 'admin':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+async def user_delete(user : admin_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
     user_res = db.query(Users).filter(Users.id ==user_id).first()
     if not user_id:
         raise HTTPException(status_code=404,detail="Item not found")
+    if user_res.id == user.get('id'):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Restricted to delete own account")
     db.delete(user_res)
     db.commit()
 
 # update user
 @router.put('/user_update/{user_id}',status_code=status.HTTP_204_NO_CONTENT)
-async def user_update(user : user_dependancy, db: db_dependancy, newdetails : AdminUserProfileUpdate, user_id:int = Path(ge=1)):
-    if not user or user.get('role') != 'admin':
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin access required')
-    detail = db.query(Users).filter(Users.id == user_id).first()
-    if not detail:
+async def user_update(user : admin_dependancy, db: db_dependancy, newdetails : AdminUserProfileUpdate, user_id:int = Path(ge=1)):
+    user_res = db.query(Users).filter(Users.id == user_id).first()
+    if not user_res:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    if user_res.id == user.get('id'):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Restricted to delete own account")
     for field, value in newdetails.model_dump(exclude_unset=True).items():
-        setattr(detail, field, value)
+        setattr(user_res, field, value)
     db.commit()
