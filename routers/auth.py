@@ -126,7 +126,7 @@ async def auth_user(auth_form : Annotated[OAuth2PasswordRequestForm, Depends()],
         value=refresh_token,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="None",
         max_age=60 * 60 * 24,
         path="/"
     )
@@ -153,7 +153,7 @@ async def logout(response: Response):
     response.delete_cookie(
         key="refresh_token",
         httponly=True,
-        samesite="lax",
+        samesite="None",
         path="/"
     )
     return {"message": "Logged out"}
