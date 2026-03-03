@@ -1,5 +1,5 @@
-from database import Base
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from app.database import Base
+from sqlalchemy import Boolean, Integer, String
 from sqlalchemy.orm import relationship, Mapped,mapped_column
 
 class Users(Base):
@@ -12,7 +12,7 @@ class Users(Base):
     lastname : Mapped[str] = mapped_column(String(255))
     hashed_pass : Mapped[str] = mapped_column(String(255))
     is_active : Mapped[bool] = mapped_column(Boolean,default=True)
-    role : Mapped[str] = mapped_column(String(255))
+    role : Mapped[str] = mapped_column(String(255), default="user")
     phone_no : Mapped[str] = mapped_column(String(255))
 
     todos = relationship(
@@ -21,21 +21,3 @@ class Users(Base):
         cascade="all, delete-orphan",
         passive_deletes=True
     )
-
-
-
-class Todos(Base):
-    __tablename__ = 'todo'
-
-    id : Mapped[int] = mapped_column(Integer,primary_key=True,index=True)
-    title : Mapped[str] = mapped_column(String(255))
-    description : Mapped[str] = mapped_column(String(500))
-    priority : Mapped[int] = mapped_column(Integer)
-    complete : Mapped[bool] = mapped_column(Boolean, default=False)
-    owner_id : Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("user.id", ondelete="CASCADE"),
-        nullable=False
-    )
-
-    owner = relationship("Users", back_populates="todos")

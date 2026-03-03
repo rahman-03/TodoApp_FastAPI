@@ -1,11 +1,11 @@
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-# local
-from database import Base, engine
-from routers import auth, todos, admin, users
-from config import FRONTEND_URL
+from app.database import Base, engine
+from app.auth import router
+from app.routers import todos, admin, users
+from app.core.config import FRONTEND_URL
 
 
 app = FastAPI()
@@ -26,8 +26,5 @@ async def health_check():
 
 app.include_router(users.router)
 app.include_router(admin.router)
-app.include_router(auth.router)
+app.include_router(router.router)
 app.include_router(todos.router)
-
-if __name__ == "__main__":
-   uvicorn.run("main:app", host="localhost", port=8080, reload=True)
