@@ -17,12 +17,11 @@ router = APIRouter(
 
 class DetailsChange(BaseModel):
     password : str
-    email : Optional[str] = Field(description='Only if needed to change the value', default=None )
-    username : Optional[str] = Field(description='Only if needed to change the value', default=None )
-    firstname : Optional[str] = Field(description='Only if needed to change the value', default=None )
-    lastname : Optional[str] = Field(description='Only if needed to change the value', default=None )
-    # role : str = Field(description='Only if needed to change the value', default=None )
-    phone_no : Optional[str] = Field(description='Only if needed to change the value', default=None )
+    email : str | None = None
+    username : str | None = None
+    firstname : str | None = None
+    lastname : str | None = None
+    phone_no : str | None = None
 
 class UserResponse(BaseModel):
     id : int
@@ -52,16 +51,14 @@ user_dependancy = Annotated[dict , Depends(get_current_user)]
 
 @router.get('/', response_model=UserResponse, status_code=status.HTTP_200_OK)
 async def get_user(user : user_dependancy, db: db_dependancy):
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     return db.query(Users).filter(Users.id == user.get('id')).first()
 
 
 @router.put('/change_pass',status_code=status.HTTP_204_NO_CONTENT)
 async def change_password(user : user_dependancy, db: db_dependancy, newpass : PassChange):
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     detail = db.query(Users).filter(Users.id == user.get('id')).first()
+    if not detail:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Not Found')
     if not authenticate(user.get('username'),detail.password,db):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     if newpass.new_pass == newpass.conf_pass:
@@ -73,9 +70,9 @@ async def change_password(user : user_dependancy, db: db_dependancy, newpass : P
 
 @router.put('/details_change',status_code=status.HTTP_204_NO_CONTENT)
 async def details_change(user : user_dependancy, db: db_dependancy, newdetails : DetailsChange):
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     detail = db.query(Users).filter(Users.id == user.get('id')).first()
+    if not detail:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Not Found')
     if not authenticate(user.get('username'),detail.password,db):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     if newdetails.email:
@@ -86,8 +83,6 @@ async def details_change(user : user_dependancy, db: db_dependancy, newdetails :
         detail.firstname = newdetails.firstname
     if newdetails.lastname:
         detail.lastname = newdetails.lastname
-    # if newdetails.role:
-    #     detail.role = newdetails.role
     if newdetails.phone_no:
         detail.phone_no = newdetails.phone_no
     db.commit()

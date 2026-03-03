@@ -1,19 +1,19 @@
 from database import Base
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped,mapped_column
 
 class Users(Base):
     __tablename__ = 'user'
 
-    id = Column(Integer,primary_key=True,index=True)
-    email = Column(String(255),unique=True)
-    username = Column(String(255),unique=True)
-    firstname = Column(String(255))
-    lastname = Column(String(255))
-    hashed_pass = Column(String(255))
-    is_active = Column(String(255),default=True)
-    role = Column(String(255))
-    phone_no = Column(String(255))
+    id : Mapped[int] = mapped_column(Integer,primary_key=True,index=True)
+    email : Mapped[str] = mapped_column(String(255),unique=True)
+    username : Mapped[str] = mapped_column(String(255),unique=True)
+    firstname : Mapped[str] = mapped_column(String(255))
+    lastname : Mapped[str] = mapped_column(String(255))
+    hashed_pass : Mapped[str] = mapped_column(String(255))
+    is_active : Mapped[bool] = mapped_column(Boolean,default=True)
+    role : Mapped[str] = mapped_column(String(255))
+    phone_no : Mapped[str] = mapped_column(String(255))
 
     todos = relationship(
         "Todos",
@@ -27,12 +27,12 @@ class Users(Base):
 class Todos(Base):
     __tablename__ = 'todo'
 
-    id = Column(Integer,primary_key=True,index=True)
-    title = Column(String(255))
-    description = Column(String(500))
-    priority = Column(Integer)
-    complete = Column(Boolean, default=False)
-    owner_id = Column(
+    id : Mapped[int] = mapped_column(Integer,primary_key=True,index=True)
+    title : Mapped[str] = mapped_column(String(255))
+    description : Mapped[str] = mapped_column(String(500))
+    priority : Mapped[int] = mapped_column(Integer)
+    complete : Mapped[bool] = mapped_column(Boolean, default=False)
+    owner_id : Mapped[int] = mapped_column(
         Integer,
         ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False

@@ -9,7 +9,7 @@ from jose import jwt , JWTError, ExpiredSignatureError # type: ignore
 
 from models import Users # type: ignore
 from database import SessionLocal # type: ignore
-from config import ACCESS_SECRET_KEY, REFREST_SECRET_KEY, ALGO
+from config import ACCESS_SECRET_KEY, REFRESH_SECRET_KEY, ALGO
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
@@ -89,7 +89,7 @@ def create_refresh_token(username : str, userid : int,role : str):
               'type' : 'refresh'}
     expires = datetime.now(timezone.utc) + timedelta(days=1)
     encode.update({ 'exp' : expires })
-    return _create_jwt_token(encode , REFREST_SECRET_KEY)
+    return _create_jwt_token(encode , REFRESH_SECRET_KEY)
 
 async def get_current_user(token : Annotated[str , Depends(oauth2_bearer)], db: db_dependancy):
     try:
@@ -126,7 +126,7 @@ async def auth_user(auth_form : Annotated[OAuth2PasswordRequestForm, Depends()],
         value=refresh_token,
         httponly=True,
         secure=True,
-        samesite="None",
+        samesite="none",
         max_age=60 * 60 * 24,
         path="/"
     )
@@ -138,7 +138,7 @@ async def refresh_token(request : Request):
         refresh_token = request.cookies.get("refresh_token")
         if not refresh_token:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
-        payload = jwt.decode(refresh_token, REFREST_SECRET_KEY, algorithms=ALGO)
+        payload = jwt.decode(refresh_token, REFRESH_SECRET_KEY, algorithms=ALGO)
         if payload.get("type") != "refresh":
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
         new_access_token = create_access_token(payload.get("sub"),payload.get("id"),payload.get("role"))
@@ -153,7 +153,7 @@ async def logout(response: Response):
     response.delete_cookie(
         key="refresh_token",
         httponly=True,
-        samesite="None",
+        samesite="none",
         path="/"
     )
     return {"message": "Logged out"}

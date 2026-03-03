@@ -57,7 +57,7 @@ async def user_detail(user : admin_dependancy, db: db_dependancy, user_id:int = 
 @router.delete('/user/{user_id}',status_code=status.HTTP_204_NO_CONTENT)
 async def user_delete(user : admin_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
     user_res = db.query(Users).filter(Users.id ==user_id).first()
-    if not user_id:
+    if not user_res:
         raise HTTPException(status_code=404,detail="Item not found")
     if user_res.id == user.get('id'):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Restricted to delete own account")
