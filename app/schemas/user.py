@@ -22,6 +22,7 @@ class UserResponse(BaseModel):
     firstname : str
     lastname : str
     role : str
+    is_active : bool
     phone_no : str | None
 
 class PassChange(BaseModel):
