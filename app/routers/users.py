@@ -29,7 +29,7 @@ async def create_user(db:db_dependancy , new_user : UserRequest):
     }
 
 
-@router.get('/', response_model=UserResponse, status_code=status.HTTP_200_OK)
+@router.get('', response_model=UserResponse, status_code=status.HTTP_200_OK)
 async def get_user(user : user_dependancy, db: db_dependancy):
     return db.query(Users).filter(Users.id == user.id).first()
 
