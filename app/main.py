@@ -20,6 +20,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get('/')
+async def root():
+    return {
+        "name": "FocusSprint API",
+        "version": "1.0.0",
+        "status": "running",
+        "docs": "/docs",
+        "redoc": "/redoc",
+        "health": "/healthy",
+    }
+
 @app.get('/healthy')
 async def health_check():
    return {'msg' : 'healthy'}
