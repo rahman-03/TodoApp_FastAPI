@@ -12,12 +12,12 @@ router = APIRouter(
 )
 
 # get all todos
-@router.get('/',status_code=status.HTTP_200_OK)
+@router.get('',status_code=status.HTTP_200_OK)
 async def root(user : user_dependancy, db: db_dependancy):
     return db.query(Todos).filter(Todos.owner_id == user.id).all()
 
 # get todo by id
-@router.get('/todo/{todo_id}',status_code=status.HTTP_200_OK)
+@router.get('/{todo_id}',status_code=status.HTTP_200_OK)
 async def todo_by_id(user : user_dependancy, db: db_dependancy, todo_id:int = Path(ge=1)):
     todo_res = db.query(Todos).filter(Todos.id ==todo_id).filter(Todos.owner_id ==user.id).first()
     if not todo_res:
@@ -25,7 +25,7 @@ async def todo_by_id(user : user_dependancy, db: db_dependancy, todo_id:int = Pa
     return todo_res
 
 # Create a todo
-@router.post('/todo',status_code=status.HTTP_201_CREATED)
+@router.post('',status_code=status.HTTP_201_CREATED)
 async def todo_create(user : user_dependancy, db: db_dependancy, todo_req : TodoRequest):
     todo_data = todo_req.model_dump()
     todo_data["owner_id"] = user.id
@@ -36,7 +36,7 @@ async def todo_create(user : user_dependancy, db: db_dependancy, todo_req : Todo
     return user_model
 
 # update a todo
-@router.put('/todo/{todo_id}',status_code=status.HTTP_200_OK)
+@router.put('/{todo_id}',status_code=status.HTTP_200_OK)
 async def todo_update(user : user_dependancy, db: db_dependancy,todo_req : TodoRequest, todo_id:int = Path(ge=1)):
     todo_model = db.query(Todos).filter(Todos.id ==todo_id).filter(Todos.owner_id ==user.id).first()
     if not todo_model:
@@ -48,7 +48,7 @@ async def todo_update(user : user_dependancy, db: db_dependancy,todo_req : TodoR
     return todo_model
 
 # delete todo
-@router.delete('/todo/{todo_id}',status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{todo_id}',status_code=status.HTTP_204_NO_CONTENT)
 async def todo_delete(user : user_dependancy, db: db_dependancy, todo_id:int = Path(ge=1)):
     todo_res = db.query(Todos).filter(Todos.id ==todo_id).filter(Todos.owner_id ==user.id).first()
     if not todo_res:

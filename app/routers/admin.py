@@ -16,7 +16,7 @@ async def users_list(user : admin_dependancy, db: db_dependancy):
     return db.query(Users).all()
 
 # get user by id
-@router.get('/users/{user_id}', response_model=UserResponse, status_code=status.HTTP_200_OK)
+@router.get('/user/{user_id}', response_model=UserResponse, status_code=status.HTTP_200_OK)
 async def user_detail(user : admin_dependancy, db: db_dependancy, user_id:int = Path(ge=1)):
     return db.query(Users).filter(Users.id ==user_id).first()
 
