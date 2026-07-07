@@ -1,6 +1,6 @@
 # FocusSprint - FastAPI Backend
 
-A scalable RESTful backend API for **FocusSprint**, a task management application built with **FastAPI**, **PostgreSQL**, and **JWT Authentication**. This API provides secure user authentication and complete task management functionality.
+A scalable, containerized RESTful backend API for **FocusSprint**, a task management application. Built with **FastAPI**, **PostgreSQL**, **JWT Authentication**, and **Docker** for seamless local development and production deployment. This API provides secure user authentication, complete task management functionality, and admin user management with role-based access control.
 
 ## ⚡ Quick Start (5 Minutes)
 
@@ -26,6 +26,8 @@ uvicorn app.main:app --reload
 # http://127.0.0.1:8000/docs
 ```
 
+> Tip: You can also run the backend with Docker instead of the local Python virtual environment. See the Docker section below.
+
 ---
 
 ## 🚀 Features
@@ -48,7 +50,7 @@ uvicorn app.main:app --reload
 
 ## 🛠️ Tech Stack
 
-- Python 3.x
+- Python 3.11
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
@@ -58,6 +60,7 @@ uvicorn app.main:app --reload
 - Passlib (Password Hashing)
 - Uvicorn
 - python-dotenv
+- Docker & Docker Compose
 
 ---
 
@@ -87,6 +90,11 @@ focussprint_fastapi/
 │   ├── database.py
 │   └── main.py
 │
+├── Dockerfile
+├── docker-compose.yml
+├── docker-compose.override.yml
+├── docker-compose.prod.yml
+├── .dockerignore
 ├── requirements.txt
 ├── .env.example
 ├── .env
@@ -99,8 +107,35 @@ focussprint_fastapi/
 
 ### Prerequisites
 
-- **Python 3.8+** - [Download](https://www.python.org/downloads/)
+#### For Local Python Development:
+- **Python 3.11** - [Download](https://www.python.org/downloads/)
 - **PostgreSQL** - [Download](https://www.postgresql.org/download/)
+
+#### For Docker:
+- **Docker** - [Download](https://www.docker.com/products/docker-desktop)
+- **Docker Compose** - Included with Docker Desktop
+
+### Quick Start with Docker
+
+The fastest way to get started is with Docker:
+
+```powershell
+# 1. Clone repository
+git clone https://github.com/rahman-03/focussprint-fastapi.git
+cd focussprint_fastapi
+
+# 2. Create .env file (copy from .env.example)
+# Copy environment variables from .env.example
+
+# 3. Start the development stack with hot-reload
+docker compose up --build
+
+# 4. Open browser to API documentation
+# http://127.0.0.1:8000/docs
+
+# 5. Stop the stack when finished
+docker compose down
+```
 
 ### 1. Clone the Repository
 
@@ -211,7 +246,45 @@ uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
 
 ---
 
-## 📖 API Documentation
+## 🐳 Docker
+
+### Local Development
+
+This repository uses `docker-compose.yml` with `docker-compose.override.yml` for streamlined local development:
+
+```powershell
+docker compose up --build
+```
+
+The override file automatically provides:
+- Project directory mounted into the container at `/app`
+- Hot-reload enabled with `uvicorn --reload`
+- Live code changes without container restart
+- Port 8000 exposed for local testing
+
+Stop the development stack:
+
+```powershell
+docker compose down
+```
+
+### Production Deployment
+
+For production, do **not** use the dev override. Deploy using only the base compose file:
+
+```powershell
+# If override file is not present on server
+docker compose -f docker-compose.yml up -d --build
+
+# Or use a production override file (if available)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+**Optimization:** The repository includes a `.dockerignore` file to keep images small and builds fast by excluding unnecessary files (virtualenv, .git, __pycache__, etc.)
+
+---
+
+## �📖 API Documentation
 
 **Swagger UI (Interactive):**
 ```
@@ -262,21 +335,25 @@ POST /auth/refresh
 
 | Method | Endpoint | Description |
 |---------|----------|----------|
-| GET | `/users/` | Get current user profile |
-| PUT | `/users/` | Update user profile |
+| POST | `/user/create_user` | Create new user |
+| GET | `/user` | Get current user profile |
+| PUT | `/user/change_pass` | Change user password |
+| PUT | `/user/details_change` | Update user details |
 | GET | `/admin/users` | Get all users (admin only) |
-| PUT | `/admin/users/{user_id}` | Update user (admin only) |
-| DELETE | `/admin/users/{user_id}` | Delete user (admin only) |
+| GET | `/admin/user/{user_id}` | Get user by ID (admin only) |
+| PUT | `/admin/user_update/{user_id}` | Update user (admin only) |
+| DELETE | `/admin/user/{user_id}` | Delete user (admin only) |
 
 ### Tasks Management
 
 | Method | Endpoint | Description |
 |---------|----------|----------|
-| GET | `/todos/` | Get all user tasks |
-| GET | `/todos/todo/{id}` | Get task by ID |
-| POST | `/todos/todo` | Create new task |
-| PUT | `/todos/todo/{id}` | Update task |
-| DELETE | `/todos/todo/{id}` | Delete task |
+| GET | `/todos` | Get all user tasks |
+| GET | `/todos/{todo_id}` | Get task by ID |
+| POST | `/todos` | Create new task |
+| PUT | `/todos/{todo_id}` | Update task |
+| DELETE | `/todos/{todo_id}` | Delete task |
+| DELETE | `/todos/deleteall` | Delete all user tasks |
 
 ---
 
@@ -415,7 +492,7 @@ set PYTHONPATH=%PYTHONPATH%;.        # Windows
 - [ ] Recurring tasks
 - [ ] Calendar view
 - [ ] API integrations (Slack, Google Calendar)
-- [ ] Docker containerization
+- [x] Docker containerization
 - [ ] CI/CD Pipeline
 
 ---
