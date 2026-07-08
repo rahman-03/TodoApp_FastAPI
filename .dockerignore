@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.venv/
+.vfastapi/
+
+.git/
+.gitignore
+
+.env
+
+README.md
+LICENSE

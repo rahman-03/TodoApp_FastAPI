@@ -1,0 +1,11 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+
+    image: focussprint_fastapi
+
+    ports:
+      - "8000:8000"
