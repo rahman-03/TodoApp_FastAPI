@@ -1,6 +1,6 @@
 # FocusSprint - FastAPI Backend
 
-A scalable, containerized RESTful backend API for **FocusSprint**, a task management application. Built with **FastAPI**, **PostgreSQL**, **JWT Authentication**, and **Docker** for seamless local development and production deployment. This API provides secure user authentication, complete task management functionality, and admin user management with role-based access control.
+A scalable, containerized RESTful backend API for **FocusSprint**, a task management application. Built with **FastAPI**, **PostgreSQL**, **JWT Authentication**, and **Docker** for seamless local development and production deployment. The project features a comprehensive **Pytest**-based automated test suite to ensure reliability and maintainability. This API provides secure user authentication, complete task management functionality, and role-based admin user management.
 
 ## ⚡ Quick Start (5 Minutes)
 
@@ -45,6 +45,9 @@ uvicorn app.main:app --reload
 - Error Handling
 - Interactive API Documentation
 - Admin User Management
+- Comprehensive API Test Suite with Pytest
+- Dependency Injection & Mocking for Tests
+- Isolated Test Database
 
 ---
 
@@ -54,10 +57,11 @@ uvicorn app.main:app --reload
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
-- Alembic
 - Pydantic
 - JWT (JSON Web Tokens)
 - Passlib (Password Hashing)
+- Pytest
+- FastAPI TestClient
 - Uvicorn
 - python-dotenv
 - Docker & Docker Compose
@@ -89,12 +93,25 @@ focussprint_fastapi/
 │   │   └── user.py
 │   ├── database.py
 │   └── main.py
+|
+├──test/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── utils.py
+│   ├── test_main.py
+│   ├── test_auth.py
+│   ├── test_users.py
+│   ├── test_todos.py
+│   └── test_admin.py
 │
 ├── Dockerfile
 ├── docker-compose.yml
 ├── docker-compose.override.yml
 ├── docker-compose.prod.yml
 ├── .dockerignore
+│
+├── pytest.ini
+│
 ├── requirements.txt
 ├── .env.example
 ├── .env
@@ -298,6 +315,55 @@ http://127.0.0.1:8000/redoc
 
 ---
 
+## 🧪 Testing
+
+The project includes a comprehensive test suite built with **Pytest** and **FastAPI TestClient**.
+
+### Test Coverage
+
+- Authentication
+- User Management
+- Todo Management
+- Admin Operations
+- JWT Authentication
+- Authorization
+- Error Handling
+- CRUD Operations
+
+### Run All Tests
+
+```bash
+pytest
+```
+
+### Run Tests with Verbose Output
+
+```bash
+pytest -vv
+```
+
+### Run a Specific Test Module
+
+```bash
+pytest test/test_todos.py
+```
+
+### Run a Specific Test
+
+```bash
+pytest test/test_todos.py::test_create_todo
+```
+
+The test suite uses:
+
+- Isolated test database
+- Dependency overrides
+- Pytest fixtures
+- FastAPI TestClient
+- Automatic database cleanup after each test
+
+---
+
 ## 🔐 Authentication
 
 This project uses **JWT Bearer Tokens** with Access & Refresh tokens.
@@ -463,6 +529,7 @@ set PYTHONPATH=%PYTHONPATH%;.        # Windows
 - 🔐 Secure Environment Variables
 - 🚫 CORS Protection
 - 📝 SQL Injection Prevention (SQLAlchemy ORM)
+- ✅ Automated API Testing
 
 ---
 
@@ -492,7 +559,6 @@ set PYTHONPATH=%PYTHONPATH%;.        # Windows
 - [ ] Recurring tasks
 - [ ] Calendar view
 - [ ] API integrations (Slack, Google Calendar)
-- [x] Docker containerization
 - [ ] CI/CD Pipeline
 
 ---

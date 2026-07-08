@@ -14,14 +14,17 @@ router = APIRouter(
 # get all todos
 @router.get('',status_code=status.HTTP_200_OK)
 async def root(user : user_dependancy, db: db_dependancy):
-    return db.query(Todos).filter(Todos.owner_id == user.id).all()
+    todos = db.query(Todos).filter(Todos.owner_id == user.id).all()
+    if todos is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todos not found")
+    return todos
 
 # get todo by id
 @router.get('/{todo_id}',status_code=status.HTTP_200_OK)
 async def todo_by_id(user : user_dependancy, db: db_dependancy, todo_id:int = Path(ge=1)):
     todo_res = db.query(Todos).filter(Todos.id ==todo_id).filter(Todos.owner_id ==user.id).first()
     if not todo_res:
-        raise HTTPException(status_code=404,detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Todo not found")
     return todo_res
 
 # Create a todo
@@ -29,11 +32,11 @@ async def todo_by_id(user : user_dependancy, db: db_dependancy, todo_id:int = Pa
 async def todo_create(user : user_dependancy, db: db_dependancy, todo_req : TodoRequest):
     todo_data = todo_req.model_dump()
     todo_data["owner_id"] = user.id
-    user_model = Todos(**todo_data)
-    db.add(user_model)
+    todo_model = Todos(**todo_data)
+    db.add(todo_model)
     db.commit()
-    db.refresh(user_model)
-    return user_model
+    db.refresh(todo_model)
+    return todo_model
 
 # update a todo
 @router.put('/{todo_id}',status_code=status.HTTP_200_OK)

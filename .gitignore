@@ -1,7 +1,6 @@
 .env
 *.env
-test/
-alembic/
 __pycache__
 .mypy_cache
 .vfastapi
+.venv
