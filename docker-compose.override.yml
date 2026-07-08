@@ -1,5 +1,8 @@
 services:
   api:
+    build:
+      target: development
+
     volumes:
       - .:/app
 
