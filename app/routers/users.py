@@ -31,10 +31,13 @@ async def create_user(db:db_dependancy , new_user : UserRequest):
 
 @router.get('', response_model=UserResponse, status_code=status.HTTP_200_OK)
 async def get_user(user : user_dependancy, db: db_dependancy):
-    return db.query(Users).filter(Users.id == user.id).first()
+    user = db.query(Users).filter(Users.id == user.id).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user
 
 
-@router.put('/change_pass',status_code=status.HTTP_204_NO_CONTENT)
+@router.put('/change_pass',status_code=status.HTTP_200_OK)
 async def change_password(user : user_dependancy, db: db_dependancy, newpass : PassChange):
     detail = db.query(Users).filter(Users.id == user.id).first()
     if not detail:
@@ -51,7 +54,7 @@ async def change_password(user : user_dependancy, db: db_dependancy, newpass : P
     }
 
 
-@router.put('/details_change',status_code=status.HTTP_204_NO_CONTENT)
+@router.put('/details_change',status_code=status.HTTP_200_OK)
 async def details_change(user : user_dependancy, db: db_dependancy, newdetails : DetailsChange):
     detail = db.query(Users).filter(Users.id == user.id).first()
     if not detail:

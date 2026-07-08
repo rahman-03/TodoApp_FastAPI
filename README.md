@@ -43,6 +43,9 @@ uvicorn app.main:app --reload
 - Error Handling
 - Interactive API Documentation
 - Admin User Management
+- Comprehensive API Test Suite with Pytest
+- Dependency Injection & Mocking for Tests
+- Isolated Test Database
 
 ---
 
@@ -52,10 +55,11 @@ uvicorn app.main:app --reload
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
-- Alembic
 - Pydantic
 - JWT (JSON Web Tokens)
 - Passlib (Password Hashing)
+- Pytest
+- FastAPI TestClient
 - Uvicorn
 - python-dotenv
 
@@ -86,6 +90,18 @@ focussprint_fastapi/
 │   │   └── user.py
 │   ├── database.py
 │   └── main.py
+│
+├──test/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── utils.py
+│   ├── test_main.py
+│   ├── test_auth.py
+│   ├── test_users.py
+│   ├── test_todos.py
+│   └── test_admin.py
+│
+├── pytest.ini
 │
 ├── requirements.txt
 ├── .env.example
@@ -222,6 +238,55 @@ http://127.0.0.1:8000/docs
 ```
 http://127.0.0.1:8000/redoc
 ```
+
+---
+
+## 🧪 Testing
+
+The project includes a comprehensive test suite built with **Pytest** and **FastAPI TestClient**.
+
+### Test Coverage
+
+- Authentication
+- User Management
+- Todo Management
+- Admin Operations
+- JWT Authentication
+- Authorization
+- Error Handling
+- CRUD Operations
+
+### Run All Tests
+
+```bash
+pytest
+```
+
+### Run Tests with Verbose Output
+
+```bash
+pytest -vv
+```
+
+### Run a Specific Test Module
+
+```bash
+pytest test/test_todos.py
+```
+
+### Run a Specific Test
+
+```bash
+pytest test/test_todos.py::test_create_todo
+```
+
+The test suite uses:
+
+- Isolated test database
+- Dependency overrides
+- Pytest fixtures
+- FastAPI TestClient
+- Automatic database cleanup after each test
 
 ---
 
@@ -386,6 +451,7 @@ set PYTHONPATH=%PYTHONPATH%;.        # Windows
 - 🔐 Secure Environment Variables
 - 🚫 CORS Protection
 - 📝 SQL Injection Prevention (SQLAlchemy ORM)
+- ✅ Automated API Testing
 
 ---
 

@@ -11,6 +11,7 @@ def get_env_var(name : str):
 
 FRONTEND_URL = get_env_var("FRONTEND_URL").split(",")
 DATABASE_URL = get_env_var("DATABASE_URL")
+TEST_DATABASE_URL = get_env_var("TEST_DATABASE_URL")
 ACCESS_SECRET_KEY = get_env_var("ACCESS_SECRET_KEY")
 REFRESH_SECRET_KEY = get_env_var("REFRESH_SECRET_KEY")
 ALGO = get_env_var("ALGO")
