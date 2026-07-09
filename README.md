@@ -17,9 +17,9 @@
 | Service | Link |
 |----------|------|
 | 🚀 Frontend | https://focussprint.in |
-| ⚡ Backend API | https://focussprint.onrender.com |
-| 📖 Swagger UI | https://focussprint.onrender.com/docs |
-| 📚 ReDoc | https://focussprint.onrender.com/redoc |
+| ⚡ Backend API | https://api.focussprint.in |
+| 📖 Swagger UI | https://api.focussprint.in/docs |
+| 📚 ReDoc | https://api.focussprint.in/redoc |
 | 💻 Frontend Repository | https://github.com/rahman-03/focussprint-angular |
 
 A scalable, containerized RESTful backend API for **FocusSprint**, a task management application. Built with **FastAPI**, **PostgreSQL**, **JWT Authentication**, and **Docker** for seamless local development and production deployment. The project features a comprehensive **Pytest**-based automated test suite to ensure reliability and maintainability. This API provides secure user authentication, complete task management functionality, and role-based admin user management.
@@ -107,41 +107,36 @@ uvicorn app.main:app --reload
 
 ## 🏗 Architecture
 
-```text
-Angular Frontend
-        │
-        ▼
- FastAPI Backend
-        │
-        ▼
- PostgreSQL Database
-
-
-Development
-─────────────────────
-Docker Compose
-        │
-        ▼
- Hot Reload
-
-
-Testing
-─────────────────────
-Docker Compose
-        │
-        ▼
-Pytest
-        │
-        ▼
-PostgreSQL Test Container
-
-
-Production
-─────────────────────
-Render
-        │
-        ▼
-Neon PostgreSQL
+```
+                           ┌─────────────────────┐
+                           │        User         │
+                           └──────────┬──────────┘
+                                      │
+                                  HTTPS
+                                      │
+                                      ▼
+                  ┌──────────────────────────────────┐
+                  │  Angular Frontend (Netlify)      │
+                  └──────────┬───────────────────────┘
+                             │
+                      JWT Auth / REST API
+                             │
+                             ▼
+                  ┌──────────────────────────────────┐
+                  │   FastAPI Backend (Render)       │
+                  │                                  │
+                  │ • Authentication                 │
+                  │ • Authorization (RBAC)           │
+                  │ • Business Logic                 │
+                  │ • REST API                       │
+                  └──────────┬───────────────────────┘
+                             │
+                        SQLAlchemy ORM
+                             │
+                             ▼
+                  ┌──────────────────────────────────┐
+                  │ PostgreSQL Database (Neon)       │
+                  └──────────────────────────────────┘
 ```
 
 ---
@@ -788,7 +783,7 @@ refactor: improve database queries
 | Frontend Repository | https://github.com/rahman-03/focussprint-angular |
 | Backend Repository | https://github.com/rahman-03/focussprint-fastapi |
 | Live Frontend | https://focussprint.in |
-| Live Backend | https://focussprint.onrender.com |
+| Live Backend | https://api.focussprint.in |
 
 ---
 
