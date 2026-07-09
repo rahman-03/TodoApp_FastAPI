@@ -783,7 +783,7 @@ refactor: improve database queries
 | Frontend Repository | https://github.com/rahman-03/focussprint-angular |
 | Backend Repository | https://github.com/rahman-03/focussprint-fastapi |
 | Live Frontend | https://focussprint.in |
-| Live Backend | https://focussprint.onrender.com |
+| Live Backend | https://api.focussprint.in |
 
 ---
 
