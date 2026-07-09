@@ -39,8 +39,6 @@ CMD ["pytest", "-vv"]
 FROM base AS production
 
 COPY app ./app
-COPY requirements.txt .
-COPY .env.example .
 
 EXPOSE 8000
 
