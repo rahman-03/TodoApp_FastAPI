@@ -3,13 +3,16 @@ from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 import pytest
 from passlib.hash import pbkdf2_sha256 # type: ignore
+import os
+from dotenv import load_dotenv
 
-from app.core.config import TEST_DATABASE_URL
 from app.database import Base
 from app.models.todo import Todos
 from app.models.user import Users
 from app.main import app
 
+load_dotenv()
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.create_all(bind=engine)
