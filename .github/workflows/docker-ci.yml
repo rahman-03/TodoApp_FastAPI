@@ -1,0 +1,59 @@
+name: Docker CI
+
+on:
+  push:
+    branches:
+      - "**"
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    name: Run Docker Test Suite
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/focussprint_test
+      TEST_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/focussprint_test
+
+      ACCESS_SECRET_KEY: ${{ secrets.ACCESS_SECRET_KEY }}
+      REFRESH_SECRET_KEY: ${{ secrets.REFRESH_SECRET_KEY }}
+
+      ALGO: HS256
+      FRONTEND_URL: http://localhost:4200
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Docker Installation
+        run: |
+          docker --version
+          docker compose version
+
+      - name: Build Test Image
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.test.yml \
+            build
+
+      - name: Run Test Suite
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.test.yml \
+            up \
+            --abort-on-container-exit \
+            --exit-code-from api
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.test.yml \
+            down -v --remove-orphans
