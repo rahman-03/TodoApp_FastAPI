@@ -3,6 +3,9 @@ services:
     build:
       target: production
 
+    ports:
+      - "8000:8000"
+
     restart: unless-stopped
 
     healthcheck:

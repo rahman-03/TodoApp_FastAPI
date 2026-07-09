@@ -1,7 +1,33 @@
+# Environment Variables
 .env
 .env.test
 *.env
-__pycache__
-.mypy_cache
-.vfastapi
-.venv
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.pytest/
+.coverage
+htmlcov/
+
+# Virtual Environments
+venv/
+.venv/
+.vfastapi/
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local Database (if applicable)
+*.db
+*.sqlite3

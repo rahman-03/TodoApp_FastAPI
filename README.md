@@ -1,5 +1,27 @@
 # FocusSprint - FastAPI Backend
 
+<p align="center">
+
+[![Docker CI](https://github.com/rahman-03/focussprint-fastapi/actions/workflows/docker-ci.yml/badge.svg)](https://github.com/rahman-03/focussprint-fastapi/actions/workflows/docker-ci.yml)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
+![Pytest](https://img.shields.io/badge/Tests-27%2B-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+</p>
+
+## 🌐 Live Demo
+
+| Service | Link |
+|----------|------|
+| 🚀 Frontend | https://focussprint.in |
+| ⚡ Backend API | https://focussprint.onrender.com |
+| 📖 Swagger UI | https://focussprint.onrender.com/docs |
+| 📚 ReDoc | https://focussprint.onrender.com/redoc |
+| 💻 Frontend Repository | https://github.com/rahman-03/focussprint-angular |
+
 A scalable, containerized RESTful backend API for **FocusSprint**, a task management application. Built with **FastAPI**, **PostgreSQL**, **JWT Authentication**, and **Docker** for seamless local development and production deployment. The project features a comprehensive **Pytest**-based automated test suite to ensure reliability and maintainability. This API provides secure user authentication, complete task management functionality, and role-based admin user management.
 
 ## ⚡ Quick Start (5 Minutes)
@@ -46,29 +68,81 @@ uvicorn app.main:app --reload
 - Interactive API Documentation
 - Admin User Management
 - Comprehensive Automated API Testing with Pytest
-- Isolated Test Database
+- Dockerized Test Environment
 - Isolated PostgreSQL Test Database
 - Multi-stage Docker Build
 - Multi-environment Docker Compose Configuration
 - Dependency Injection & Mocking for Tests
-- Isolated Test Database
 
 ---
 
 ## 🛠️ Tech Stack
 
+### Backend
 - Python 3.11
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
+- Alembic
 - Pydantic
-- JWT (JSON Web Tokens)
-- Passlib (Password Hashing)
+
+### Authentication
+- JWT
+- Passlib (bcrypt)
+
+### Testing
 - Pytest
 - FastAPI TestClient
-- Uvicorn
-- python-dotenv
-- Docker & Docker Compose
+
+### DevOps
+- Docker
+- Docker Compose
+- GitHub Actions
+
+### Deployment
+- Render
+- Neon PostgreSQL
+
+---
+
+## 🏗 Architecture
+
+```text
+Angular Frontend
+        │
+        ▼
+ FastAPI Backend
+        │
+        ▼
+ PostgreSQL Database
+
+
+Development
+─────────────────────
+Docker Compose
+        │
+        ▼
+ Hot Reload
+
+
+Testing
+─────────────────────
+Docker Compose
+        │
+        ▼
+Pytest
+        │
+        ▼
+PostgreSQL Test Container
+
+
+Production
+─────────────────────
+Render
+        │
+        ▼
+Neon PostgreSQL
+```
 
 ---
 
@@ -230,11 +304,6 @@ ALGO="HS256"
 # Frontend Configuration
 FRONTEND_URL="http://localhost:4200"
 
-# Optional: Server Configuration
-SERVER_HOST="127.0.0.1"
-SERVER_PORT="8000"
-```
-
 **⚠️ Security Tips:**
 - Never commit `.env` file to git
 - Use strong, random secret keys
@@ -315,6 +384,16 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
 ---
 
+## 🐳 Docker Build Targets
+
+| Target | Purpose |
+|---------|---------|
+| `development` | Local development with hot reload |
+| `test` | Execute the Pytest suite |
+| `production` | Optimized production image |
+
+---
+
 ## �📖 API Documentation
 
 **Swagger UI (Interactive):**
@@ -379,11 +458,11 @@ docker compose \
 
 This command builds the test image, starts an isolated PostgreSQL container, executes the complete Pytest suite, and automatically shuts down the test environment after completion.
 
-**Note**
-
-- Local Docker testing requires a `.env.test` file containing the test environment variables.
-- This file is intentionally excluded from version control.
-- Use `.env.example` as a reference when creating it.
+> **Note**
+>
+> `.env.test` is used only for local Docker-based testing and is intentionally excluded from version control.
+>
+> GitHub Actions injects the required environment variables through repository secrets and workflow environment variables, so `.env.test` is **not** required in CI.
 
 ### The automated testing infrastructure includes:
 
@@ -396,6 +475,46 @@ This command builds the test image, starts an isolated PostgreSQL container, exe
 - Authentication & Authorization testing
 - CRUD endpoint testing
 - Admin endpoint testing
+
+---
+
+## 🔄 Continuous Integration
+
+Every push and pull request automatically:
+
+- Builds the Docker image
+- Starts an isolated PostgreSQL test database
+- Executes the complete Pytest suite
+- Reports test results through GitHub Actions
+
+The project uses Docker-based CI to ensure the application behaves consistently across local development and automated pipelines.
+
+---
+
+## 🚀 Continuous Deployment
+
+The production backend is automatically deployed to **Render** whenever changes are merged into the `main` branch.
+
+Current deployment workflow:
+
+```text
+Feature Branch
+      │
+      ▼
+Pull Request
+      │
+      ▼
+GitHub Actions (Docker CI)
+      │
+      ▼
+Merge to main
+      │
+      ▼
+Render Automatic Deployment
+      │
+      ▼
+Live API
+```
 
 ---
 
@@ -568,33 +687,68 @@ set PYTHONPATH=%PYTHONPATH%;.        # Windows
 
 ---
 
-## 🎯 Roadmap & Future Enhancements
+## 🎯 Roadmap & Project Progress
 
-### Short Term (v1.1)
-- [ ] Email verification on signup
-- [ ] Password reset functionality
-- [ ] Task categories and tags
-- [ ] Due dates and reminders
+### ✅ Completed (v1.0)
 
-### Medium Term (v1.2)
-- [ ] Task priorities (High/Medium/Low)
-- [ ] Subtasks support
-- [ ] Task status tracking (Todo/In Progress/Done/Blocked)
-- [ ] Task sharing with other users
-- [ ] Task comments and discussions
+- [x] User Registration & Login
+- [x] JWT Authentication with Refresh Tokens
+- [x] Role-Based Access Control (Admin/User)
+- [x] Secure Password Hashing (bcrypt)
+- [x] Todo CRUD Operations
+- [x] User Profile Management
+- [x] Admin User Management
+- [x] PostgreSQL Database Integration
+- [x] SQLAlchemy ORM
+- [x] Input Validation with Pydantic
+- [x] Comprehensive Error Handling
+- [x] Interactive API Documentation (Swagger UI & ReDoc)
+- [x] Dockerized Development Environment
+- [x] Multi-stage Docker Build
+- [x] Docker Compose (Development, Testing & Production)
+- [x] Automated Testing with Pytest
+- [x] Dockerized PostgreSQL Test Environment
+- [x] GitHub Actions Continuous Integration
+- [x] Automated Deployment to Render on Push to Main
 
-### Long Term (v2.0)
-- [ ] Real-time notifications
+---
+
+### 🚀 Short Term (v1.1)
+
+- [ ] Email Verification
+- [ ] Password Reset
+- [ ] Task Categories & Tags
+- [ ] Due Dates & Reminders
+- [ ] Pagination & Filtering
+- [ ] Rate Limiting
+
+---
+
+### 🚀 Medium Term (v1.2)
+
+- [ ] Task Priorities
+- [ ] Subtasks
+- [ ] Task Status Workflow
+- [ ] Task Sharing
+- [ ] Task Comments
+- [ ] File Attachments
+
+---
+
+### 🌟 Long Term (v2.0)
+
+- [ ] Real-time Notifications (WebSockets)
 - [ ] Two-Factor Authentication (2FA)
-- [ ] User profiles with avatars
-- [ ] Task templates
-- [ ] Activity logs
-- [ ] Analytics & productivity dashboard
-- [ ] Time tracking on tasks
-- [ ] Recurring tasks
-- [ ] Calendar view
-- [ ] API integrations (Slack, Google Calendar)
-- [ ] CI/CD Pipeline
+- [ ] User Profiles & Avatars
+- [ ] Task Templates
+- [ ] Activity Logs
+- [ ] Productivity Dashboard
+- [ ] Time Tracking
+- [ ] Recurring Tasks
+- [ ] Calendar View
+- [ ] Slack & Google Calendar Integration
+- [ ] Publish Docker Images to GitHub Container Registry (GHCR)
+- [ ] Deploy Production from GitHub Container Registry
 
 ---
 
@@ -629,12 +783,12 @@ refactor: improve database queries
 
 ## 🌐 Related Projects
 
-**Angular Frontend:**
-- Repository: https://github.com/rahman-03/focussprint-angular
-- Live: https://focussprint.in
-
-**Deployed Backend:**
-- API: https://focussprint.onrender.com
+| Project | Link |
+|----------|------|
+| Frontend Repository | https://github.com/rahman-03/focussprint-angular |
+| Backend Repository | https://github.com/rahman-03/focussprint-fastapi |
+| Live Frontend | https://focussprint.in |
+| Live Backend | https://focussprint.onrender.com |
 
 ---
 
