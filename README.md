@@ -45,7 +45,11 @@ uvicorn app.main:app --reload
 - Error Handling
 - Interactive API Documentation
 - Admin User Management
-- Comprehensive API Test Suite with Pytest
+- Comprehensive Automated API Testing with Pytest
+- Isolated Test Database
+- Isolated PostgreSQL Test Database
+- Multi-stage Docker Build
+- Multi-environment Docker Compose Configuration
 - Dependency Injection & Mocking for Tests
 - Isolated Test Database
 
@@ -108,13 +112,13 @@ focussprint_fastapi/
 ├── docker-compose.yml
 ├── docker-compose.override.yml
 ├── docker-compose.prod.yml
+├── docker-compose.test.yml
 ├── .dockerignore
 │
 ├── pytest.ini
 │
 ├── requirements.txt
 ├── .env.example
-├── .env
 └── README.md
 ```
 
@@ -265,6 +269,16 @@ uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
 
 ## 🐳 Docker
 
+The project uses multiple Docker Compose configurations for different environments.
+
+| Compose File | Purpose |
+|--------------|---------|
+| `docker-compose.yml` | Base configuration shared across environments |
+| `docker-compose.override.yml` | Local development with hot reload and bind mounts |
+| `docker-compose.test.yml` | Automated testing with an isolated PostgreSQL container |
+| `docker-compose.prod.yml` | Production deployment configuration |
+
+
 ### Local Development
 
 This repository uses `docker-compose.yml` with `docker-compose.override.yml` for streamlined local development:
@@ -353,14 +367,35 @@ pytest test/test_todos.py
 ```bash
 pytest test/test_todos.py::test_create_todo
 ```
+### Run Tests in Docker
 
-The test suite uses:
+```bash
+docker compose \
+  --env-file .env.test \
+  -f docker-compose.yml \
+  -f docker-compose.test.yml \
+  up --build --abort-on-container-exit
+```
 
-- Isolated test database
-- Dependency overrides
+This command builds the test image, starts an isolated PostgreSQL container, executes the complete Pytest suite, and automatically shuts down the test environment after completion.
+
+**Note**
+
+- Local Docker testing requires a `.env.test` file containing the test environment variables.
+- This file is intentionally excluded from version control.
+- Use `.env.example` as a reference when creating it.
+
+### The automated testing infrastructure includes:
+
+- 27+ Pytest test cases
+- Dockerized PostgreSQL test database
+- FastAPI dependency overrides
 - Pytest fixtures
 - FastAPI TestClient
-- Automatic database cleanup after each test
+- Automatic database cleanup
+- Authentication & Authorization testing
+- CRUD endpoint testing
+- Admin endpoint testing
 
 ---
 
