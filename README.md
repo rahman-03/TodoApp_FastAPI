@@ -1,6 +1,28 @@
 # FocusSprint - FastAPI Backend
 
-A scalable RESTful backend API for **FocusSprint**, a task management application built with **FastAPI**, **PostgreSQL**, and **JWT Authentication**. This API provides secure user authentication and complete task management functionality.
+<p align="center">
+
+[![Docker CI](https://github.com/rahman-03/focussprint-fastapi/actions/workflows/docker-ci.yml/badge.svg)](https://github.com/rahman-03/focussprint-fastapi/actions/workflows/docker-ci.yml)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
+![Pytest](https://img.shields.io/badge/Tests-27%2B-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+</p>
+
+## 🌐 Live Demo
+
+| Service | Link |
+|----------|------|
+| 🚀 Frontend | https://focussprint.in |
+| ⚡ Backend API | https://api.focussprint.in |
+| 📖 Swagger UI | https://api.focussprint.in/docs |
+| 📚 ReDoc | https://api.focussprint.in/redoc |
+| 💻 Frontend Repository | https://github.com/rahman-03/focussprint-angular |
+
+A scalable, containerized RESTful backend API for **FocusSprint**, a task management application. Built with **FastAPI**, **PostgreSQL**, **JWT Authentication**, and **Docker** for seamless local development and production deployment. The project features a comprehensive **Pytest**-based automated test suite to ensure reliability and maintainability. This API provides secure user authentication, complete task management functionality, and role-based admin user management.
 
 ## ⚡ Quick Start (5 Minutes)
 
@@ -26,6 +48,8 @@ uvicorn app.main:app --reload
 # http://127.0.0.1:8000/docs
 ```
 
+> Tip: You can also run the backend with Docker instead of the local Python virtual environment. See the Docker section below.
+
 ---
 
 ## 🚀 Features
@@ -43,21 +67,77 @@ uvicorn app.main:app --reload
 - Error Handling
 - Interactive API Documentation
 - Admin User Management
+- Comprehensive Automated API Testing with Pytest
+- Dockerized Test Environment
+- Isolated PostgreSQL Test Database
+- Multi-stage Docker Build
+- Multi-environment Docker Compose Configuration
+- Dependency Injection & Mocking for Tests
 
 ---
 
 ## 🛠️ Tech Stack
 
-- Python 3.x
+### Backend
+- Python 3.11
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
 - Alembic
 - Pydantic
-- JWT (JSON Web Tokens)
-- Passlib (Password Hashing)
-- Uvicorn
-- python-dotenv
+
+### Authentication
+- JWT
+- Passlib (bcrypt)
+
+### Testing
+- Pytest
+- FastAPI TestClient
+
+### DevOps
+- Docker
+- Docker Compose
+- GitHub Actions
+
+### Deployment
+- Render
+- Neon PostgreSQL
+
+---
+
+## 🏗 Architecture
+
+```
+                           ┌─────────────────────┐
+                           │        User         │
+                           └──────────┬──────────┘
+                                      │
+                                  HTTPS
+                                      │
+                                      ▼
+                  ┌──────────────────────────────────┐
+                  │  Angular Frontend (Netlify)      │
+                  └──────────┬───────────────────────┘
+                             │
+                      JWT Auth / REST API
+                             │
+                             ▼
+                  ┌──────────────────────────────────┐
+                  │   FastAPI Backend (Render)       │
+                  │                                  │
+                  │ • Authentication                 │
+                  │ • Authorization (RBAC)           │
+                  │ • Business Logic                 │
+                  │ • REST API                       │
+                  └──────────┬───────────────────────┘
+                             │
+                        SQLAlchemy ORM
+                             │
+                             ▼
+                  ┌──────────────────────────────────┐
+                  │ PostgreSQL Database (Neon)       │
+                  └──────────────────────────────────┘
+```
 
 ---
 
@@ -86,10 +166,28 @@ focussprint_fastapi/
 │   │   └── user.py
 │   ├── database.py
 │   └── main.py
+|
+├──test/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── utils.py
+│   ├── test_main.py
+│   ├── test_auth.py
+│   ├── test_users.py
+│   ├── test_todos.py
+│   └── test_admin.py
+│
+├── Dockerfile
+├── docker-compose.yml
+├── docker-compose.override.yml
+├── docker-compose.prod.yml
+├── docker-compose.test.yml
+├── .dockerignore
+│
+├── pytest.ini
 │
 ├── requirements.txt
 ├── .env.example
-├── .env
 └── README.md
 ```
 
@@ -99,8 +197,35 @@ focussprint_fastapi/
 
 ### Prerequisites
 
-- **Python 3.8+** - [Download](https://www.python.org/downloads/)
+#### For Local Python Development:
+- **Python 3.11** - [Download](https://www.python.org/downloads/)
 - **PostgreSQL** - [Download](https://www.postgresql.org/download/)
+
+#### For Docker:
+- **Docker** - [Download](https://www.docker.com/products/docker-desktop)
+- **Docker Compose** - Included with Docker Desktop
+
+### Quick Start with Docker
+
+The fastest way to get started is with Docker:
+
+```powershell
+# 1. Clone repository
+git clone https://github.com/rahman-03/focussprint-fastapi.git
+cd focussprint_fastapi
+
+# 2. Create .env file (copy from .env.example)
+# Copy environment variables from .env.example
+
+# 3. Start the development stack with hot-reload
+docker compose up --build
+
+# 4. Open browser to API documentation
+# http://127.0.0.1:8000/docs
+
+# 5. Stop the stack when finished
+docker compose down
+```
 
 ### 1. Clone the Repository
 
@@ -174,11 +299,6 @@ ALGO="HS256"
 # Frontend Configuration
 FRONTEND_URL="http://localhost:4200"
 
-# Optional: Server Configuration
-SERVER_HOST="127.0.0.1"
-SERVER_PORT="8000"
-```
-
 **⚠️ Security Tips:**
 - Never commit `.env` file to git
 - Use strong, random secret keys
@@ -211,7 +331,65 @@ uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
 
 ---
 
-## 📖 API Documentation
+## 🐳 Docker
+
+The project uses multiple Docker Compose configurations for different environments.
+
+| Compose File | Purpose |
+|--------------|---------|
+| `docker-compose.yml` | Base configuration shared across environments |
+| `docker-compose.override.yml` | Local development with hot reload and bind mounts |
+| `docker-compose.test.yml` | Automated testing with an isolated PostgreSQL container |
+| `docker-compose.prod.yml` | Production deployment configuration |
+
+
+### Local Development
+
+This repository uses `docker-compose.yml` with `docker-compose.override.yml` for streamlined local development:
+
+```powershell
+docker compose up --build
+```
+
+The override file automatically provides:
+- Project directory mounted into the container at `/app`
+- Hot-reload enabled with `uvicorn --reload`
+- Live code changes without container restart
+- Port 8000 exposed for local testing
+
+Stop the development stack:
+
+```powershell
+docker compose down
+```
+
+### Production Deployment
+
+For production, do **not** use the dev override. Deploy using only the base compose file:
+
+```powershell
+# If override file is not present on server
+docker compose -f docker-compose.yml up -d --build
+
+# Or use a production override file (if available)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+**Optimization:** The repository includes a `.dockerignore` file to keep images small and builds fast by excluding unnecessary files (virtualenv, .git, __pycache__, etc.)
+
+---
+
+## 🐳 Docker Build Targets
+
+| Target | Purpose |
+|---------|---------|
+| `development` | Local development with hot reload |
+| `test` | Execute the Pytest suite |
+| `production` | Optimized production image |
+
+---
+
+## �📖 API Documentation
 
 **Swagger UI (Interactive):**
 ```
@@ -221,6 +399,116 @@ http://127.0.0.1:8000/docs
 **ReDoc (Clean Documentation):**
 ```
 http://127.0.0.1:8000/redoc
+```
+
+---
+
+## 🧪 Testing
+
+The project includes a comprehensive test suite built with **Pytest** and **FastAPI TestClient**.
+
+### Test Coverage
+
+- Authentication
+- User Management
+- Todo Management
+- Admin Operations
+- JWT Authentication
+- Authorization
+- Error Handling
+- CRUD Operations
+
+### Run All Tests
+
+```bash
+pytest
+```
+
+### Run Tests with Verbose Output
+
+```bash
+pytest -vv
+```
+
+### Run a Specific Test Module
+
+```bash
+pytest test/test_todos.py
+```
+
+### Run a Specific Test
+
+```bash
+pytest test/test_todos.py::test_create_todo
+```
+### Run Tests in Docker
+
+```bash
+docker compose \
+  --env-file .env.test \
+  -f docker-compose.yml \
+  -f docker-compose.test.yml \
+  up --build --abort-on-container-exit
+```
+
+This command builds the test image, starts an isolated PostgreSQL container, executes the complete Pytest suite, and automatically shuts down the test environment after completion.
+
+> **Note**
+>
+> `.env.test` is used only for local Docker-based testing and is intentionally excluded from version control.
+>
+> GitHub Actions injects the required environment variables through repository secrets and workflow environment variables, so `.env.test` is **not** required in CI.
+
+### The automated testing infrastructure includes:
+
+- 27+ Pytest test cases
+- Dockerized PostgreSQL test database
+- FastAPI dependency overrides
+- Pytest fixtures
+- FastAPI TestClient
+- Automatic database cleanup
+- Authentication & Authorization testing
+- CRUD endpoint testing
+- Admin endpoint testing
+
+---
+
+## 🔄 Continuous Integration
+
+Every push and pull request automatically:
+
+- Builds the Docker image
+- Starts an isolated PostgreSQL test database
+- Executes the complete Pytest suite
+- Reports test results through GitHub Actions
+
+The project uses Docker-based CI to ensure the application behaves consistently across local development and automated pipelines.
+
+---
+
+## 🚀 Continuous Deployment
+
+The production backend is automatically deployed to **Render** whenever changes are merged into the `main` branch.
+
+Current deployment workflow:
+
+```text
+Feature Branch
+      │
+      ▼
+Pull Request
+      │
+      ▼
+GitHub Actions (Docker CI)
+      │
+      ▼
+Merge to main
+      │
+      ▼
+Render Automatic Deployment
+      │
+      ▼
+Live API
 ```
 
 ---
@@ -262,21 +550,25 @@ POST /auth/refresh
 
 | Method | Endpoint | Description |
 |---------|----------|----------|
-| GET | `/users/` | Get current user profile |
-| PUT | `/users/` | Update user profile |
+| POST | `/user/create_user` | Create new user |
+| GET | `/user` | Get current user profile |
+| PUT | `/user/change_pass` | Change user password |
+| PUT | `/user/details_change` | Update user details |
 | GET | `/admin/users` | Get all users (admin only) |
-| PUT | `/admin/users/{user_id}` | Update user (admin only) |
-| DELETE | `/admin/users/{user_id}` | Delete user (admin only) |
+| GET | `/admin/user/{user_id}` | Get user by ID (admin only) |
+| PUT | `/admin/user_update/{user_id}` | Update user (admin only) |
+| DELETE | `/admin/user/{user_id}` | Delete user (admin only) |
 
 ### Tasks Management
 
 | Method | Endpoint | Description |
 |---------|----------|----------|
-| GET | `/todos/` | Get all user tasks |
-| GET | `/todos/todo/{id}` | Get task by ID |
-| POST | `/todos/todo` | Create new task |
-| PUT | `/todos/todo/{id}` | Update task |
-| DELETE | `/todos/todo/{id}` | Delete task |
+| GET | `/todos` | Get all user tasks |
+| GET | `/todos/{todo_id}` | Get task by ID |
+| POST | `/todos` | Create new task |
+| PUT | `/todos/{todo_id}` | Update task |
+| DELETE | `/todos/{todo_id}` | Delete task |
+| DELETE | `/todos/deleteall` | Delete all user tasks |
 
 ---
 
@@ -386,37 +678,72 @@ set PYTHONPATH=%PYTHONPATH%;.        # Windows
 - 🔐 Secure Environment Variables
 - 🚫 CORS Protection
 - 📝 SQL Injection Prevention (SQLAlchemy ORM)
+- ✅ Automated API Testing
 
 ---
 
-## 🎯 Roadmap & Future Enhancements
+## 🎯 Roadmap & Project Progress
 
-### Short Term (v1.1)
-- [ ] Email verification on signup
-- [ ] Password reset functionality
-- [ ] Task categories and tags
-- [ ] Due dates and reminders
+### ✅ Completed (v1.0)
 
-### Medium Term (v1.2)
-- [ ] Task priorities (High/Medium/Low)
-- [ ] Subtasks support
-- [ ] Task status tracking (Todo/In Progress/Done/Blocked)
-- [ ] Task sharing with other users
-- [ ] Task comments and discussions
+- [x] User Registration & Login
+- [x] JWT Authentication with Refresh Tokens
+- [x] Role-Based Access Control (Admin/User)
+- [x] Secure Password Hashing (bcrypt)
+- [x] Todo CRUD Operations
+- [x] User Profile Management
+- [x] Admin User Management
+- [x] PostgreSQL Database Integration
+- [x] SQLAlchemy ORM
+- [x] Input Validation with Pydantic
+- [x] Comprehensive Error Handling
+- [x] Interactive API Documentation (Swagger UI & ReDoc)
+- [x] Dockerized Development Environment
+- [x] Multi-stage Docker Build
+- [x] Docker Compose (Development, Testing & Production)
+- [x] Automated Testing with Pytest
+- [x] Dockerized PostgreSQL Test Environment
+- [x] GitHub Actions Continuous Integration
+- [x] Automated Deployment to Render on Push to Main
 
-### Long Term (v2.0)
-- [ ] Real-time notifications
+---
+
+### 🚀 Short Term (v1.1)
+
+- [ ] Email Verification
+- [ ] Password Reset
+- [ ] Task Categories & Tags
+- [ ] Due Dates & Reminders
+- [ ] Pagination & Filtering
+- [ ] Rate Limiting
+
+---
+
+### 🚀 Medium Term (v1.2)
+
+- [ ] Task Priorities
+- [ ] Subtasks
+- [ ] Task Status Workflow
+- [ ] Task Sharing
+- [ ] Task Comments
+- [ ] File Attachments
+
+---
+
+### 🌟 Long Term (v2.0)
+
+- [ ] Real-time Notifications (WebSockets)
 - [ ] Two-Factor Authentication (2FA)
-- [ ] User profiles with avatars
-- [ ] Task templates
-- [ ] Activity logs
-- [ ] Analytics & productivity dashboard
-- [ ] Time tracking on tasks
-- [ ] Recurring tasks
-- [ ] Calendar view
-- [ ] API integrations (Slack, Google Calendar)
-- [ ] Docker containerization
-- [ ] CI/CD Pipeline
+- [ ] User Profiles & Avatars
+- [ ] Task Templates
+- [ ] Activity Logs
+- [ ] Productivity Dashboard
+- [ ] Time Tracking
+- [ ] Recurring Tasks
+- [ ] Calendar View
+- [ ] Slack & Google Calendar Integration
+- [ ] Publish Docker Images to GitHub Container Registry (GHCR)
+- [ ] Deploy Production from GitHub Container Registry
 
 ---
 
@@ -451,12 +778,12 @@ refactor: improve database queries
 
 ## 🌐 Related Projects
 
-**Angular Frontend:**
-- Repository: https://github.com/rahman-03/focussprint-angular
-- Live: https://focussprint.in
-
-**Deployed Backend:**
-- API: https://focussprint.onrender.com
+| Project | Link |
+|----------|------|
+| Frontend Repository | https://github.com/rahman-03/focussprint-angular |
+| Backend Repository | https://github.com/rahman-03/focussprint-fastapi |
+| Live Frontend | https://focussprint.in |
+| Live Backend | https://api.focussprint.in |
 
 ---
 
