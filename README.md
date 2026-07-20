@@ -2,7 +2,7 @@
 
 <p align="center">
 
-[![Docker CI](https://github.com/rahman-03/focussprint-fastapi/actions/workflows/docker-ci.yml/badge.svg)](https://github.com/rahman-03/focussprint-fastapi/actions/workflows/docker-ci.yml)
+[![Docker CI](https://github.com/abdulrahmanm-in/focussprint-fastapi/actions/workflows/docker-ci.yml/badge.svg)](https://github.com/abdulrahmanm-in/focussprint-fastapi/actions/workflows/docker-ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791)
@@ -20,7 +20,7 @@
 | ⚡ Backend API | https://api.focussprint.in |
 | 📖 Swagger UI | https://api.focussprint.in/docs |
 | 📚 ReDoc | https://api.focussprint.in/redoc |
-| 💻 Frontend Repository | https://github.com/rahman-03/focussprint-angular |
+| 💻 Frontend Repository | https://github.com/abdulrahmanm-in/focussprint-angular |
 
 A scalable, containerized RESTful backend API for **FocusSprint**, a task management application. Built with **FastAPI**, **PostgreSQL**, **JWT Authentication**, and **Docker** for seamless local development and production deployment. The project features a comprehensive **Pytest**-based automated test suite to ensure reliability and maintainability. This API provides secure user authentication, complete task management functionality, and role-based admin user management.
 
@@ -28,7 +28,7 @@ A scalable, containerized RESTful backend API for **FocusSprint**, a task manage
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/rahman-03/focussprint-fastapi.git
+git clone https://github.com/abdulrahmanm-in/focussprint-fastapi.git
 cd focussprint_fastapi
 
 # 2. Create virtual environment (Windows)
@@ -211,7 +211,7 @@ The fastest way to get started is with Docker:
 
 ```powershell
 # 1. Clone repository
-git clone https://github.com/rahman-03/focussprint-fastapi.git
+git clone https://github.com/abdulrahmanm-in/focussprint-fastapi.git
 cd focussprint_fastapi
 
 # 2. Create .env file (copy from .env.example)
@@ -230,7 +230,7 @@ docker compose down
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/rahman-03/focussprint-fastapi.git
+git clone https://github.com/abdulrahmanm-in/focussprint-fastapi.git
 cd focussprint_fastapi
 ```
 
@@ -780,8 +780,8 @@ refactor: improve database queries
 
 | Project | Link |
 |----------|------|
-| Frontend Repository | https://github.com/rahman-03/focussprint-angular |
-| Backend Repository | https://github.com/rahman-03/focussprint-fastapi |
+| Frontend Repository | https://github.com/abdulrahmanm-in/focussprint-angular |
+| Backend Repository | https://github.com/abdulrahmanm-in/focussprint-fastapi |
 | Live Frontend | https://focussprint.in |
 | Live Backend | https://api.focussprint.in |
 
@@ -797,7 +797,7 @@ This project is licensed under the **MIT License** - see LICENSE file for detail
 
 **Abdul Rahman M**
 
-- GitHub: https://github.com/rahman-03
+- GitHub: https://github.com/abdulrahmanm-in
 - LinkedIn: https://www.linkedin.com/in/abdul-rahman-m-660158206
 
 ---
@@ -805,7 +805,7 @@ This project is licensed under the **MIT License** - see LICENSE file for detail
 ## 📞 Support
 
 For issues, questions, or suggestions:
-- Open GitHub Issue: https://github.com/rahman-03/focussprint-fastapi/issues
+- Open GitHub Issue: https://github.com/abdulrahmanm-in/focussprint-fastapi/issues
 - Email: indmabdulrahman@gmail.com
 
 **Happy coding! 🚀**
