@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 class DetailsChange(BaseModel):
     password : str
@@ -16,6 +16,8 @@ class UserRequest(BaseModel):
     phone_no: str = Field(pattern=r"^\d{10}$")
 
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id : int
     email : EmailStr
     username : str
